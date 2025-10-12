@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://dekatutorial.github.io/styleGombalin.css" />
+    <link rel="stylesheet" href="https://dekatutorial.github.io/stylePopUp.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.4/dist/sweetalert2.all.min.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://dekatutorial.github.io/gmbl/s.js"></script>
+    <title>Surat Untuk Teman-Teman</title>
+    <style>
+      #guestbook-container {
+        display: none; /* Mulai dengan disembunyikan */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        padding: 15px;
+      }
+      #guestbook {
+        width: 100%;
+        max-width: 500px;
+        padding: 25px;
+        background-color: rgba(20, 20, 30, 0.85);
+        border-radius: 15px;
+        color: white;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+      }
+      #guestbook h2 {
+        font-family: "Arial", sans-serif;
+        border-bottom: 2px solid #ff4757;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+      #messages-container {
+        max-height: 250px;
+        overflow-y: auto;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 10px;
+        margin-bottom: 20px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        text-align: left;
+      }
+      .message {
+        background-color: rgba(255, 255, 255, 0.9);
+        color: #333;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        font-family: "Courier New", Courier, monospace;
+        word-wrap: break-word;
+      }
+      #message-form textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+        background-color: rgba(255, 255, 255, 0.9);
+      }
+      #message-form button {
+        width: 100%;
+        padding: 12px 20px;
+        border: none;
+        background-color: #ff4757;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s;
+      }
+      #message-form button:hover {
+        background-color: #e04050;
+      }
+    </style>
+  </head>
+  <body id="body">
+    <div class="preload"><p>Loading dulu . . .</p></div>
+    <div class="open">
+      <div>
+        <div class="lope"><i class="love material-icons-sharp"> favorite </i></div>
+        <h3>njirr gue gabisa ubah lovenya, pencet aja yah</h3>
+      </div>
+    </div>
+    <div id="bg"></div>
+    <img src="" alt="" id="fotoku" />
+
+    <h2 id="hai">Haii Semuanya !!</h2>
+    <h3 id="hia">Scrool kesamping ya</h3>
+
+    <div id="slider">
+      <p>Haii !!</p>
+      <p>aku harap kamu buka ini saat kamu bener bener butuh yah...</p>
+      <p>aku pakai lagu ini cuz gaby nyimpen kita di lagu ini..</p>
+      <p>gimana hari kamu ?? Buruk kah ?? gapapa kok</p>
+      <p>sini sini duduk sebentar... kita ngobrol</p>
+      <p>astaga aku bener bener bersyukur bertemu kalian..</p>
+      <p>mungkin suatu saat, pas kamu buka ini, kita udh sibuk masing masing</p>
+      <p>well...</p>
+      <p>Kalian, I mean memories bersama kalian selalu abadi..</p>
+      <p>in my hearth and my core memories..</p>
+      <p>Makasih yahh..</p>
+      <p>Kalau hari kamu buruk sekarang, jangan lupa yah..</p>
+      <p>kamu masih punya kami.. geng kita abadi !!</p>
+      <p>ga nyangkan yah.. roblok malah bring some family to us</p>
+      <p>nih buat kamu 💐💐💐💐💐🌟🌟🌟🌟🌟🌟🌷🪻🌹</p>
+      <p>Kami percaya kamu udah ngelakuin yang terbaik</p>
+      <p>ur sadness is valid, tandanya kamu udh berjuang !!</p>
+      <p>U DID SO WELL !!</p>
+      <p>Kami percaya kamu bisa kejar semua yang kamu impikan</p>
+      <p>Kalau kami percaya.. masa kamu ngga percaya..</p>
+      <p>we're f*ckin proud of you !!</p>
+      <p>Besok pasti lebih indah , kita tunggu sama sama yah..</p>
+      <p>Dear zull..</p>
+      <p>Dear Yeyo..</p>
+      <p>Dear geboy..</p>
+      <p>Dear sasa..</p>
+      <p>Dear taro..</p>
+      <p>Dear rakha..</p>
+      <p>Dear Siapapun kamu..</p>
+      <p>Klik kadonya yah<span>🎁</span></p>
+    </div>
+
+    <div id="guestbook-container">
+      <div id="guestbook">
+        <h2>Surat Digital Untuk Kita Semua 💌</h2>
+        <p>Mimpimu, Harapanmu, atau perasaanmu tulis yah, kami bantu amin-kan</p>
+        <div id="messages-container"></div>
+        <form id="message-form">
+          <textarea id="message-input" rows="4" placeholder="Tulis pesanmu di sini..." required></textarea>
+          <button type="submit">Kirim Pesan</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+      // ===================================
+      // KONFIGURASI AWAL
+      // ===================================
+      musik = "Tulus - Monokrom  Lirik Lagu (Lyrics).mp3";
+      foto = "Cinnamoroll-removebg-preview.png";
+      background = "wallpaper.jpg";
+      noWhatsapp = ""; // Biarkan ini ada agar skrip DekaTutorial tidak error
+      
+      // Memanggil fungsi utama dari script DekaTutorial
+      DekaTutorial(musik, foto, background, noWhatsapp);
+      
+      async function popUp() {
+        await swalo.fire({ title: "Jangan lama lama yah sedihnya 🌟🌟", imageUrl: "Gambar Family.jpg" });
+        await swalo.fire({ title: "Lihat deh foto ini.. Kita naik gunung bareng", imageUrl: "Gambar2.png" });
+        await swalo.fire({ title: "Main WW sampai ketemu pak prabowo 😆", imageUrl: "Gambar3.png" });
+        await swalo.fire({ title: "Main VD dimana aku menang terus 😋", imageUrl: "Gambar1.png" });
+        await swalo.fire({ title: "Day 1 yeyo benerin generator ditemenin kita semua", imageUrl: "Day1 yeyo.png" });
+        await swalo.fire({ title: "Taro ketusuk dan diketawain gaby ~~", imageUrl: "Taro ireng ketusuk.png" });
+        await swalo.fire({ title: "Nggak lama, gaby ketusuk dan diketawain 1 server", imageUrl: "Gaby ketusuk.jpg" });
+        await swalo.fire({ title: "Kalau dunia lagi buruk, login dc sama roblok yahh.. kita ketawa bareng lagi", imageUrl: "Gambar4.jpg" });
+
+        // KEMBALIKAN PANGGILAN FUNGSI ASLI SEPERTI SEMULA
+        kirimPesan();
+      }
+
+      // UBAH NAMA FUNGSI INI DARI 'showGuestbook' MENJADI 'kirimPesan'
+      // Ini akan "membajak" fungsi asli dari skrip DekaTutorial
+      function kirimPesan() {
+        document.getElementById('slider').style.display = 'none';
+        document.getElementById('hai').style.display = 'none';
+        document.getElementById('hia').style.display = 'none';
+        
+        const guestbookContainer = document.getElementById('guestbook-container');
+        guestbookContainer.style.display = 'flex';
+        setTimeout(() => {
+          guestbookContainer.style.opacity = '1';
+        }, 100);
+      }
+      
+      // ===================================
+      // KODE FIREBASE UNTUK SURAT DIGITAL
+      // ===================================
+      const firebaseConfig = {
+        apiKey: "AIzaSyDksEJsmAlT5DM1hvppcs_nXLQnc4wOqTc",
+        authDomain: "my-best-friend-d857f.firebaseapp.com",
+        databaseURL: "https://my-best-friend-d857f-default-rtdb.firebaseio.com", 
+        projectId: "my-best-friend-d857f",
+        storageBucket: "my-best-friend-d857f.appspot.com",
+        messagingSenderId: "815795213187",
+        appId: "1:815795213187:web:62fe4962aaabb87d68dcb6"
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+      const messagesRef = database.ref("messages");
+
+      const messageForm = document.getElementById("message-form");
+      const messageInput = document.getElementById("message-input");
+      const messagesContainer = document.getElementById("messages-container");
+
+      messageForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const messageText = messageInput.value.trim();
+        if (messageText) {
+          messagesRef.push({
+            text: messageText,
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+          });
+          messageInput.value = "";
+        }
+      });
+
+      messagesRef.orderByChild("timestamp").on("child_added", (snapshot) => {
+        const message = snapshot.val();
+        const messageElement = document.createElement("div");
+        messageElement.classList.add("message");
+        messageElement.innerText = message.text;
+        messagesContainer.prepend(messageElement);
+      });
+    </script>
+  </body>
+</html>
