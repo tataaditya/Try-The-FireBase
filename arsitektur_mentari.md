@@ -274,163 +274,218 @@ flowchart LR
 
 ---
 
-# Diagram 3: Activity Diagram (Main Workflow)
+# Diagram 3: Activity Diagram (Swimlane Style)
 
 ## Judul Formal
-**Diagram Aktivitas Alur Kerja Utama Sistem MENTARI**
+**Diagram Aktivitas Sistem MENTARI dengan Pembagian Tanggung Jawab (Swimlane)**
 
 ## Tujuan Diagram
-Diagram ini menggambarkan alur aktivitas utama dalam sistem MENTARI, mulai dari input pengguna hingga output dokumen. Diagram menunjukkan urutan langkah-langkah, keputusan kondisional, dan aktivitas paralel dalam proses pembuatan dokumen otomatis.
+Diagram ini menggambarkan alur aktivitas sistem MENTARI dengan pembagian tanggung jawab berdasarkan aktor/komponen. Setiap kolom (lane) merepresentasikan aktor yang bertanggung jawab atas aktivitas tertentu dalam proses pembuatan dokumen otomatis.
 
-## Daftar Aktivitas
+## Swimlanes (Kolom Aktor)
 
-| No | Aktivitas | Deskripsi |
-|----|-----------|-----------|
-| A1 | Start | Titik awal proses |
-| A2 | Menerima Input Pengguna | Sistem menerima perintah dari pengguna |
-| A3 | Mendeteksi Intent | Keyword Router menganalisis jenis permintaan |
-| A4 | Memproses Intent | Document Handler menangani permintaan berdasarkan intent |
-| A5 | Generate Konten AI | LLM menghasilkan konten teks |
-| A6 | Memanggil MCP Server | MCP Manager memanggil server yang sesuai |
-| A7 | Membuat Dokumen | MCP Server membuat/memodifikasi dokumen |
-| A8 | Menyimpan ke Storage | Dokumen disimpan ke local storage |
-| A9 | Menampilkan Hasil | Sistem menampilkan hasil ke pengguna |
-| A10 | End | Titik akhir proses |
+| No | Lane | Komponen | Tanggung Jawab |
+|----|------|----------|----------------|
+| 1 | User | Staf Administrasi | Memasukkan perintah, menerima hasil |
+| 2 | MENTARI Agent | AI Orchestrator | Memproses intent, koordinasi, generate konten |
+| 3 | MCP Server | Document Processor | Operasi dokumen (Word/Excel/PPT/PDF) |
+| 4 | Local Storage | Filesystem | Menyimpan dan mengambil dokumen |
+
+## Daftar Aktivitas per Lane
+
+| Lane | Aktivitas |
+|------|-----------|
+| User | Memasukkan Perintah → Menerima Hasil → Mengunduh Dokumen |
+| MENTARI Agent | Deteksi Intent → Generate Konten AI → Koordinasi MCP → Compile Response |
+| MCP Server | Validasi Parameter → Execute Tool → Proses Dokumen |
+| Local Storage | Simpan File → Konfirmasi Penyimpanan |
 
 ## Decision Points
 
-| No | Keputusan | Kondisi | Cabang |
-|----|-----------|---------|--------|
-| D1 | Tipe Intent? | CREATE_WORD / CREATE_EXCEL / CREATE_PPT / READ_FILE / CONVERT_PDF / CHAT | 6 cabang |
-| D2 | Perlu AI Content? | Ya / Tidak | 2 cabang |
-| D3 | Operasi Berhasil? | Sukses / Gagal | 2 cabang |
+| Simbol | Keputusan | Kondisi |
+|--------|-----------|---------|
+| ◇ | Intent Valid? | Valid → lanjut, Invalid → error |
+| ◇ | Perlu AI? | Ya → generate konten, Tidak → langsung proses |
+| ◇ | Operasi Sukses? | Sukses → simpan, Gagal → error message |
 
-## Layout
-**Rekomendasi:** Top-Down dengan decision diamonds
+## Layout Diagram Swimlane
+**Rekomendasi:** Format kolom vertikal dengan alur top-down (seperti contoh ATM)
 
 ```
-                              ┌───────┐
-                              │ START │
-                              └───┬───┘
-                                  │
-                                  ▼
-                    ┌─────────────────────────────┐
-                    │   Menerima Input Pengguna   │
-                    └─────────────┬───────────────┘
-                                  │
-                                  ▼
-                    ┌─────────────────────────────┐
-                    │     Mendeteksi Intent       │
-                    │     (Keyword Router)        │
-                    └─────────────┬───────────────┘
-                                  │
-                                  ▼
-                        ┌─────────────────┐
-                       ╱                   ╲
-                      ╱   Tipe Intent?      ╲
-                     ╱                       ╲
-                    ╱─────────────────────────╲
-                   │                           │
-      ┌────────────┼───────────┬───────────────┼────────────┐
-      │            │           │               │            │
-      ▼            ▼           ▼               ▼            ▼
-┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
-│  CREATE  │ │  CREATE  │ │  CREATE  │ │   READ   │ │  CONVERT │
-│   WORD   │ │  EXCEL   │ │   PPT    │ │   FILE   │ │   PDF    │
-└────┬─────┘ └────┬─────┘ └────┬─────┘ └────┬─────┘ └────┬─────┘
-      │            │           │               │            │
-      └────────────┴─────┬─────┴───────────────┴────────────┘
-                         │
-                         ▼
-               ┌─────────────────┐
-              ╱                   ╲
-             ╱  Perlu Generate    ╲
-            ╱   Konten AI?         ╲
-           ╱                        ╲
-          ╱──────────────────────────╲
-         │ Ya                      Tidak│
-         ▼                              │
-┌─────────────────────────┐             │
-│  Generate Konten AI     │             │
-│  (Ollama LLM)           │             │
-└───────────┬─────────────┘             │
-            │                           │
-            └───────────┬───────────────┘
-                        │
-                        ▼
-          ┌─────────────────────────────┐
-          │   Memanggil MCP Server      │
-          │   (JSON-RPC)                │
-          └─────────────┬───────────────┘
-                        │
-                        ▼
-          ┌─────────────────────────────┐
-          │   Membuat/Memproses         │
-          │   Dokumen                   │
-          └─────────────┬───────────────┘
-                        │
-                        ▼
-              ┌─────────────────┐
-             ╱                   ╲
-            ╱  Operasi Berhasil?  ╲
-           ╱                       ╲
-          ╱─────────────────────────╲
-         │ Ya                    Tidak│
-         ▼                            ▼
-┌───────────────────┐      ┌───────────────────┐
-│Simpan ke Storage  │      │ Tampilkan Error   │
-└─────────┬─────────┘      └─────────┬─────────┘
-          │                          │
-          └──────────┬───────────────┘
-                     │
-                     ▼
-       ┌─────────────────────────────┐
-       │   Menampilkan Hasil ke      │
-       │   Pengguna                  │
-       └─────────────┬───────────────┘
-                     │
-                     ▼
-                ┌─────────┐
-                │   END   │
-                └─────────┘
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                            ACTIVITY DIAGRAM - SISTEM MENTARI                                         │
+│                      (Alur Pembuatan Dokumen Otomatis)                                               │
+├─────────────────────┬─────────────────────┬─────────────────────┬────────────────────────────────────┤
+│        User         │   MENTARI Agent     │     MCP Server      │          Local Storage             │
+│  (Staf Administrasi)│   (AI Orchestrator) │ (Document Processor)│          (Filesystem)              │
+├─────────────────────┼─────────────────────┼─────────────────────┼────────────────────────────────────┤
+│                     │                     │                     │                                    │
+│         ●           │                     │                     │                                    │
+│         │           │                     │                     │                                    │
+│         ▼           │                     │                     │                                    │
+│  ╭─────────────╮    │                     │                     │                                    │
+│  │ Memasukkan  │    │                     │                     │                                    │
+│  │  Perintah   │    │                     │                     │                                    │
+│  ╰──────┬──────╯    │                     │                     │                                    │
+│         │           │                     │                     │                                    │
+│         └───────────┼──────►              │                     │                                    │
+│                     │     ╭─────────────╮ │                     │                                    │
+│                     │     │  Deteksi    │ │                     │                                    │
+│                     │     │   Intent    │ │                     │                                    │
+│                     │     ╰──────┬──────╯ │                     │                                    │
+│                     │            │        │                     │                                    │
+│                     │            ▼        │                     │                                    │
+│                     │        ◇───────◇    │                     │                                    │
+│                     │       ╱ Intent  ╲   │                     │                                    │
+│                     │      ╱  Valid?   ╲  │                     │                                    │
+│                     │     ◇─────────────◇ │                     │                                    │
+│                     │      │[Valid]      │[Invalid]             │                                    │
+│                     │      ▼             ▼                      │                                    │
+│                     │ ╭─────────────╮   ╭─────────────╮         │                                    │
+│                     │ │  Generate   │   │  Tampilkan  │         │                                    │
+│                     │ │ Konten AI   │   │   Error     │─────────┼──────────────────►                 │
+│                     │ │  (Ollama)   │   ╰─────────────╯         │              ◄────────────────┐    │
+│                     │ ╰──────┬──────╯                           │                               │    │
+│                     │        │                                  │                               │    │
+│                     │        ▼                                  │                               │    │
+│                     │ ╭─────────────╮                           │                               │    │
+│                     │ │ Koordinasi  │                           │                               │    │
+│                     │ │    MCP      │                           │                               │    │
+│                     │ ╰──────┬──────╯                           │                               │    │
+│                     │        │                                  │                               │    │
+│                     │        └──────────────────►               │                               │    │
+│                     │                     │ ╭─────────────╮     │                               │    │
+│                     │                     │ │  Validasi   │     │                               │    │
+│                     │                     │ │  Parameter  │     │                               │    │
+│                     │                     │ ╰──────┬──────╯     │                               │    │
+│                     │                     │        │            │                               │    │
+│                     │                     │        ▼            │                               │    │
+│                     │                     │ ╭─────────────╮     │                               │    │
+│                     │                     │ │ Execute Tool│     │                               │    │
+│                     │                     │ │ (JSON-RPC)  │     │                               │    │
+│                     │                     │ ╰──────┬──────╯     │                               │    │
+│                     │                     │        │            │                               │    │
+│                     │                     │        ▼            │                               │    │
+│                     │                     │    ◇───────◇        │                               │    │
+│                     │                     │   ╱ Operasi  ╲      │                               │    │
+│                     │                     │  ╱  Sukses?   ╲     │                               │    │
+│                     │                     │ ◇─────────────◇     │                               │    │
+│                     │                     │  │[Sukses]     │[Gagal]                             │    │
+│                     │                     │  ▼             ▼────┼──────────────────────────────►│    │
+│                     │                     │ ╭─────────────╮     │                               │    │
+│                     │                     │ │   Proses    │     │                               │    │
+│                     │                     │ │  Dokumen    │     │                               │    │
+│                     │                     │ ╰──────┬──────╯     │                               │    │
+│                     │                     │        │            │                               │    │
+│                     │                     │        └────────────┼──────────────►                │    │
+│                     │                     │                     │       ╭─────────────╮         │    │
+│                     │                     │                     │       │  Simpan     │         │    │
+│                     │                     │                     │       │   File      │         │    │
+│                     │                     │                     │       ╰──────┬──────╯         │    │
+│                     │                     │                     │              │                │    │
+│                     │                     │                     │              ▼                │    │
+│                     │                     │                     │       ╭─────────────╮         │    │
+│                     │                     │                     │       │ Konfirmasi  │         │    │
+│                     │                     │                     │       │ Penyimpanan │         │    │
+│                     │                     │                     │       ╰──────┬──────╯         │    │
+│                     │                     │                     │              │                │    │
+│                     │               ◄─────┼─────────────────────┼──────────────┘                │    │
+│                     │ ╭─────────────╮     │                     │                               │    │
+│                     │ │  Compile    │     │                     │                               │    │
+│                     │ │  Response   │     │                     │                               │    │
+│                     │ ╰──────┬──────╯     │                     │                               │    │
+│                     │        │            │                     │                               │    │
+│         ◄───────────┼────────┘            │                     │                               │    │
+│  ╭─────────────╮    │                     │                     │                               │    │
+│  │  Menerima   │    │                     │                     │                               │    │
+│  │   Hasil     │    │                     │                     │                               │    │
+│  ╰──────┬──────╯    │                     │                     │                               │    │
+│         │           │                     │                     │                               │    │
+│         ▼           │                     │                     │                               │    │
+│  ╭─────────────╮    │                     │                     │                               │    │
+│  │  Mengunduh  │    │                     │                     │                               │    │
+│  │  Dokumen    │◄───┼─────────────────────┼─────────────────────┼───────────────────────────────┘    │
+│  ╰──────┬──────╯    │                     │                     │                                    │
+│         │           │                     │                     │                                    │
+│         ▼           │                     │                     │                                    │
+│         ◎           │                     │                     │                                    │
+│                     │                     │                     │                                    │
+├─────────────────────┴─────────────────────┴─────────────────────┴────────────────────────────────────┤
+│  Keterangan:                                                                                         │
+│  ● = Initial Node (Start)        ◎ = Final Node (End)        ◇ = Decision Node                      │
+│  ╭───╮ = Activity                ───► = Control Flow         ══ = Fork/Join Bar                     │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## Mermaid Syntax
+## Penjelasan Alur
+
+| No | Langkah | Lane | Deskripsi |
+|----|---------|------|-----------|
+| 1 | Start | User | Pengguna memulai dengan memasukkan perintah melalui Chainlit UI |
+| 2 | Deteksi Intent | MENTARI Agent | Keyword Router menganalisis pesan untuk menentukan aksi |
+| 3 | Validasi | MENTARI Agent | Sistem memeriksa apakah intent dapat diproses |
+| 4 | Generate Konten | MENTARI Agent | Jika diperlukan, LLM (Ollama) menghasilkan konten teks |
+| 5 | Koordinasi MCP | MENTARI Agent | Agent menentukan MCP Server yang tepat |
+| 6 | Execute Tool | MCP Server | MCP Server menjalankan operasi dokumen via JSON-RPC |
+| 7 | Proses Dokumen | MCP Server | Dokumen dibuat/dimodifikasi sesuai permintaan |
+| 8 | Simpan File | Local Storage | Dokumen disimpan ke filesystem lokal |
+| 9 | Konfirmasi | Local Storage | Storage mengkonfirmasi penyimpanan berhasil |
+| 10 | Compile Response | MENTARI Agent | Agent menyusun respons untuk pengguna |
+| 11 | Menerima Hasil | User | Pengguna menerima notifikasi dan hasil proses |
+| 12 | Mengunduh | User | Pengguna dapat mengunduh dokumen yang dihasilkan |
+| 13 | End | User | Proses selesai |
+
+## Mermaid Syntax (Simplified)
 
 ```mermaid
-flowchart TD
-    START([Start]) --> A1[Menerima Input Pengguna]
-    A1 --> A2[Mendeteksi Intent<br/>Keyword Router]
-    A2 --> D1{Tipe Intent?}
+flowchart TB
+    subgraph User["User (Staf Administrasi)"]
+        U1((●))
+        U2[Memasukkan Perintah]
+        U3[Menerima Hasil]
+        U4[Mengunduh Dokumen]
+        U5((◎))
+    end
     
-    D1 -->|CREATE_WORD| B1[Proses Word]
-    D1 -->|CREATE_EXCEL| B2[Proses Excel]
-    D1 -->|CREATE_PPT| B3[Proses PowerPoint]
-    D1 -->|READ_FILE| B4[Proses Baca File]
-    D1 -->|CONVERT_PDF| B5[Proses Konversi]
-    D1 -->|CHAT| B6[Proses Chat]
+    subgraph Agent["MENTARI Agent"]
+        A1[Deteksi Intent]
+        A2{Intent Valid?}
+        A3[Generate Konten AI]
+        A4[Koordinasi MCP]
+        A5[Compile Response]
+        A6[Tampilkan Error]
+    end
     
-    B1 --> D2{Perlu Generate<br/>Konten AI?}
-    B2 --> D2
-    B3 --> D2
-    B4 --> D2
-    B5 --> D2
-    B6 --> A3[Generate Response AI]
+    subgraph MCP["MCP Server"]
+        M1[Validasi Parameter]
+        M2[Execute Tool]
+        M3{Operasi Sukses?}
+        M4[Proses Dokumen]
+    end
     
-    D2 -->|Ya| A3[Generate Konten AI<br/>via Ollama LLM]
-    D2 -->|Tidak| A4
-    A3 --> A4[Memanggil MCP Server]
+    subgraph Storage["Local Storage"]
+        S1[Simpan File]
+        S2[Konfirmasi Penyimpanan]
+    end
     
-    A4 --> A5[Membuat/Memproses Dokumen]
-    A5 --> D3{Operasi<br/>Berhasil?}
-    
-    D3 -->|Ya| A6[Simpan ke Local Storage]
-    D3 -->|Tidak| A7[Generate Error Message]
-    
-    A6 --> A8[Menampilkan Hasil ke Pengguna]
-    A7 --> A8
-    
-    A8 --> END([End])
+    U1 --> U2
+    U2 --> A1
+    A1 --> A2
+    A2 -->|Valid| A3
+    A2 -->|Invalid| A6
+    A3 --> A4
+    A4 --> M1
+    M1 --> M2
+    M2 --> M3
+    M3 -->|Sukses| M4
+    M3 -->|Gagal| A6
+    M4 --> S1
+    S1 --> S2
+    S2 --> A5
+    A5 --> U3
+    A6 --> U3
+    U3 --> U4
+    U4 --> U5
 ```
 
 ---
